@@ -232,5 +232,22 @@ pyenv global 3.8.10
 
 
 or some easier way to rebuild github codespace's container
-============================================================:wq
+============================================================
 
+in the <.devcontainer> there's a Docker file.   # update it with 239th line about wheel
+
+RUN pip install wheel                           # in the docker file - is Py wheel pkg missing?
+https://aka.ms/ghcs-custom-configuration        # for azure continer docs for custom continer
+
+.devcontainer has been modified to:
+
+```
+ARG USER="codespace"
+ARG VENV_PATH="/home/${USER}/venv"
+COPY requirements.txt /tmp/
+COPY Makefile /tmp/
+RUN su $USER -c "/usr/bin/python3 -m venv /home/${USER}/venv" \
+   && su $USER -c "${VENV_PATH"/bin/pip install wheel" \
+   && su $USER -c "${VENV_PATH}/bin/pip --disable-pip-version-check --no-cache-dir install -r /tmp/requirements.txt" \
+   && rm -rf /tmp/requirements.txt 
+```
